@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ajuste de Tiempo — Máquinas de Coser Brother</title>
+<style>
+  :root{
+    --blue-900:#0a2647;
+    --blue-700:#0057b8;
+    --blue-500:#1e88e5;
+    --blue-100:#e8f1fb;
+    --accent:#ff8c00;
+    --green:#2e7d32;
+    --red:#c62828;
+    --yellow:#b8860b;
+    --bg:#f4f7fb;
+    --card:#ffffff;
+    --text:#1a2433;
+    --muted:#5b6b7f;
+    --radius:16px;
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    font-family:"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:linear-gradient(160deg,var(--bg),#e3ecf7 60%);
+    color:var(--text);
+    display:flex;
+    flex-direction:column;
+    min-height:100vh;
+  }
+  header{
+    background:linear-gradient(90deg,var(--blue-900),var(--blue-700));
+    color:#fff;
+    padding:14px 24px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    flex-wrap:wrap;
+  }
+  header .brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-weight:700;
+    letter-spacing:.3px;
+  }
+  header .brand svg{flex-shrink:0;}
+  header .title-block{font-size:.92rem;color:#cfe3fb;}
+  header .title-block strong{display:block;color:#fff;font-size:1.05rem;}
+  .progress-wrap{
+    height:4px;width:100%;background:rgba(255,255,255,.15);
+  }
+  .progress-bar{height:100%;background:var(--accent);width:0%;transition:width .35s ease;}
+
+  main{
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px 16px 8px;
+  }
+  .slide-viewport{
+    width:100%;
+    max-width:920px;
+  }
+  .slide{
+    display:none;
+    background:var(--card);
+    border-radius:var(--radius);
+    box-shadow:0 20px 45px -20px rgba(10,38,71,.35);
+    padding:36px 40px 32px;
+    min-height:420px;
+    animation:fadeIn .35s ease;
+  }
+  .slide.active{display:block;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+  .slide h1{
+    font-size:1.7rem;
+    color:var(--blue-900);
+    margin:0 0 6px;
+  }
+  .slide h2{
+    font-size:1.35rem;
+    color:var(--blue-700);
+    margin:0 0 18px;
+    border-bottom:3px solid var(--blue-100);
+    padding-bottom:10px;
+  }
+  .eyebrow{
+    text-transform:uppercase;
+    letter-spacing:1.5px;
+    font-size:.72rem;
+    color:var(--accent);
+    font-weight:700;
+    margin-bottom:6px;
+  }
+  .lead{color:var(--muted);font-size:1.02rem;margin-bottom:18px;}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  @media (max-width:700px){.grid2{grid-template-columns:1fr;}}
+
+  ul.styled, ol.styled{padding-left:0;list-style:none;margin:0;}
+  ul.styled li, ol.styled li{
+    position:relative;
+    padding:10px 10px 10px 40px;
+    margin-bottom:6px;
+    background:var(--blue-100);
+    border-radius:10px;
+    line-height:1.45;
+  }
+  ol.styled{counter-reset:step;}
+  ol.styled li{counter-increment:step;}
+  ol.styled li::before{
+    content:counter(step);
+    position:absolute;left:10px;top:50%;transform:translateY(-50%);
+    width:22px;height:22px;border-radius:50%;
+    background:var(--blue-700);color:#fff;
+    font-size:.78rem;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+  }
+  ul.styled li::before{
+    content:"✓";
+    position:absolute;left:12px;top:50%;transform:translateY(-50%);
+    color:var(--blue-700);font-weight:700;
+  }
+  .warn-box{
+    background:#fff4e5;border-left:5px solid var(--accent);
+    padding:14px 16px;border-radius:10px;margin:16px 0;color:#7a4b00;
+  }
+  .warn-box strong{display:block;margin-bottom:4px;color:#8a3b00;}
+  .danger-box{
+    background:#fdecea;border-left:5px solid var(--red);
+    padding:14px 16px;border-radius:10px;margin:16px 0;color:#7a1f1f;
+  }
+  .danger-box strong{display:block;margin-bottom:4px;}
+  .info-box{
+    background:#eaf5ea;border-left:5px solid var(--green);
+    padding:14px 16px;border-radius:10px;margin:16px 0;color:#1f4d20;
+  }
+
+  .card-tools{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+    gap:14px;
+  }
+  .tool{
+    background:var(--blue-100);border-radius:12px;padding:16px 12px;text-align:center;
+  }
+  .tool .icon{font-size:1.8rem;display:block;margin-bottom:6px;}
+  .tool .name{font-size:.86rem;font-weight:600;color:var(--blue-900);}
+
+  /* Simulator */
+  .sim-wrap{
+    display:grid;grid-template-columns:280px 1fr;gap:24px;align-items:center;
+  }
+  @media (max-width:700px){.sim-wrap{grid-template-columns:1fr;}}
+  .sim-controls label{
+    display:block;font-size:.82rem;font-weight:600;color:var(--blue-900);
+    margin-top:14px;margin-bottom:4px;
+  }
+  .sim-controls input[type=range]{width:100%;}
+  .sim-controls .value{font-size:.78rem;color:var(--muted);}
+  .sim-readout{
+    margin-top:16px;padding:12px 14px;border-radius:10px;font-size:.9rem;font-weight:600;
+    background:var(--blue-100);color:var(--blue-900);transition:background .25s,color .25s;
+  }
+  .sim-readout.ok{background:#e5f6e6;color:var(--green);}
+  .sim-readout.warn{background:#fff3d6;color:var(--yellow);}
+  .sim-readout.bad{background:#fdeaea;color:var(--red);}
+  .sim-btn{
+    margin-top:12px;border:none;background:var(--blue-700);color:#fff;
+    padding:9px 14px;border-radius:8px;font-size:.82rem;cursor:pointer;font-weight:600;
+  }
+  .sim-btn:hover{background:var(--blue-900);}
+  .sim-canvas-box{
+    background:#0e1f36;border-radius:14px;display:flex;align-items:center;justify-content:center;
+    padding:10px;
+  }
+  .sim-caption{font-size:.75rem;color:var(--muted);margin-top:10px;text-align:center;}
+
+  /* Troubleshoot accordion */
+  .acc-item{border:1px solid #dde7f3;border-radius:10px;margin-bottom:10px;overflow:hidden;}
+  .acc-head{
+    background:var(--blue-100);padding:12px 16px;cursor:pointer;font-weight:600;color:var(--blue-900);
+    display:flex;justify-content:space-between;align-items:center;
+  }
+  .acc-head .plus{transition:transform .2s;}
+  .acc-item.open .acc-head .plus{transform:rotate(45deg);}
+  .acc-body{max-height:0;overflow:hidden;transition:max-height .3s ease;padding:0 16px;color:var(--muted);}
+  .acc-item.open .acc-body{padding:12px 16px;}
+
+  /* Checklist */
+  .checklist label{
+    display:flex;align-items:flex-start;gap:10px;background:var(--blue-100);
+    padding:10px 14px;border-radius:10px;margin-bottom:8px;cursor:pointer;font-size:.94rem;
+  }
+  .checklist input{margin-top:3px;}
+  .checklist label.done{text-decoration:line-through;color:var(--muted);background:#e5f6e6;}
+  .check-summary{margin-top:14px;font-weight:700;color:var(--blue-900);}
+
+  footer{
+    padding:16px 24px 26px;
+    display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;
+  }
+  .nav-btn{
+    border:none;background:var(--blue-700);color:#fff;padding:11px 22px;border-radius:30px;
+    font-size:.92rem;font-weight:600;cursor:pointer;transition:background .2s,transform .1s;
+    display:flex;align-items:center;gap:6px;
+  }
+  .nav-btn:hover{background:var(--blue-900);}
+  .nav-btn:active{transform:scale(.97);}
+  .nav-btn:disabled{opacity:.4;cursor:not-allowed;}
+  .dots{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;max-width:340px;}
+  .dot{
+    width:9px;height:9px;border-radius:50%;background:#c6d6ea;cursor:pointer;transition:background .2s,transform .2s;
+  }
+  .dot.active{background:var(--blue-700);transform:scale(1.3);}
+  .counter{font-size:.85rem;color:var(--muted);min-width:60px;text-align:center;}
+
+  code{background:#eef3f9;padding:1px 6px;border-radius:5px;font-size:.88em;color:var(--blue-900);}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <svg width="30" height="30" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="11" stroke="#fff" stroke-width="1.5"/>
+      <path d="M12 3v3M12 18v3M3 12h3M18 12h3" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>
+      <circle cx="12" cy="12" r="3.2" stroke="#ff8c00" stroke-width="1.6"/>
+    </svg>
+    <span>Guía interactiva de servicio</span>
+  </div>
+  <div class="title-block">
+    <strong>Ajuste del tiempo (timing) — máquinas de coser Brother</strong>
+    Sincronización aguja–garfio, paso a paso
+  </div>
+</header>
+<div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
+
+<main>
+  <div class="slide-viewport" id="viewport">
+
+    <!-- 1 -->
+    <section class="slide active">
+      <div class="eyebrow">Presentación interactiva</div>
+      <h1>Ajuste del tiempo (timing)<br>en máquinas de coser Brother</h1>
+      <p class="lead">Guía práctica para diagnosticar y corregir la sincronización entre la aguja y el garfio (lanzadera), la causa más común de puntadas saltadas y roturas de hilo.</p>
+      <div class="info-box">
+        Usa los botones <strong>Anterior / Siguiente</strong>, las flechas del teclado (← →), o haz clic en los puntos de abajo para navegar. La diapositiva 8 incluye un <strong>simulador interactivo</strong> del mecanismo.
+      </div>
+      <div class="warn-box">
+        <strong>Nota importante</strong>
+        Esta guía es educativa y de carácter general para máquinas domésticas Brother con garfio rotativo horizontal (familias CS/LX/XL/GX/ST, etc.). Los valores exactos (mm, tornillos, ubicación) pueden variar según el modelo: consulta siempre el manual de servicio específico cuando esté disponible.
+      </div>
+    </section>
+
+    <!-- 2 -->
+    <section class="slide">
+      <h2>¿Qué es el "timing" y por qué se desajusta?</h2>
+      <div class="grid2">
+        <div>
+          <p class="lead">El <strong>timing</strong> es el instante exacto, dentro del ciclo de la máquina, en que la punta del garfio debe pasar junto al ojo de la aguja para atrapar el hilo y formar la puntada.</p>
+          <p class="lead">Si ese instante se adelanta o se atrasa incluso un par de grados en el giro del volante, la puntada falla.</p>
+        </div>
+        <div>
+          <ul class="styled">
+            <li>Golpe o flexión de la aguja (doblada)</li>
+            <li>Tela gruesa o costura atascada que forzó el mecanismo</li>
+            <li>Desarme/rearme sin marcar la posición original</li>
+            <li>Desgaste o aflojamiento de tornillos con el uso</li>
+            <li>Aguja de tipo o calibre incorrecto para el modelo</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3 -->
+    <section class="slide">
+      <h2>Síntomas de un timing desajustado</h2>
+      <div class="card-tools">
+        <div class="tool"><span class="icon">🧵</span><span class="name">Puntadas saltadas</span></div>
+        <div class="tool"><span class="icon">✂️</span><span class="name">Hilo se rompe seguido</span></div>
+        <div class="tool"><span class="icon">🔊</span><span class="name">Golpeteo / clic al coser</span></div>
+        <div class="tool"><span class="icon">📍</span><span class="name">Aguja choca con placa o garfio</span></div>
+        <div class="tool"><span class="icon">🌀</span><span class="name">Enredos de hilo debajo de la tela</span></div>
+        <div class="tool"><span class="icon">🪡</span><span class="name">Agujas se doblan o rompen seguido</span></div>
+      </div>
+      <div class="danger-box" style="margin-top:20px;">
+        <strong>Antes de tocar el timing</strong>
+        Descarta primero lo simple: aguja nueva bien colocada, enhebrado correcto, tensión del hilo, y limpieza de pelusa en la zona del garfio. Muchos de estos síntomas se resuelven sin desarmar el mecanismo.
+      </div>
+    </section>
+
+    <!-- 4 -->
+    <section class="slide">
+      <h2>Seguridad y precauciones</h2>
+      <ul class="styled">
+        <li><strong>Desconecta</strong> la máquina de la corriente antes de cualquier ajuste mecánico o cambio de aguja.</li>
+        <li>Trabaja sobre una superficie limpia, estable y con buena iluminación.</li>
+        <li>Toma <strong>fotos</strong> antes de desarmar cualquier pieza, para poder regresarla a su posición.</li>
+        <li>No fuerces tornillos ni engranajes: si algo no gira con suavidad, detente y revisa la causa.</li>
+        <li>Si la máquina está en garantía, un desarme no autorizado puede anularla: considera llevarla a servicio técnico Brother.</li>
+        <li>Guarda los tornillos pequeños en un recipiente para no perderlos.</li>
+      </ul>
+    </section>
+
+    <!-- 5 -->
+    <section class="slide">
+      <h2>Herramientas necesarias</h2>
+      <div class="card-tools">
+        <div class="tool"><span class="icon">🔩</span><span class="name">Destornillador Phillips pequeño</span></div>
+        <div class="tool"><span class="icon">➖</span><span class="name">Destornillador plano pequeño</span></div>
+        <div class="tool"><span class="icon">🔦</span><span class="name">Linterna o lámpara de trabajo</span></div>
+        <div class="tool"><span class="icon">🧷</span><span class="name">Pinzas de punta fina</span></div>
+        <div class="tool"><span class="icon">🪡</span><span class="name">Aguja nueva del calibre correcto</span></div>
+        <div class="tool"><span class="icon">🖌️</span><span class="name">Brocha / aire comprimido</span></div>
+        <div class="tool"><span class="icon">📏</span><span class="name">Calibre de espesores (0.1 mm)</span></div>
+        <div class="tool"><span class="icon">📱</span><span class="name">Celular para fotos de referencia</span></div>
+      </div>
+    </section>
+
+    <!-- 6 -->
+    <section class="slide">
+      <h2>Preparación de la máquina</h2>
+      <ol class="styled">
+        <li>Apaga y desconecta la máquina de la corriente eléctrica.</li>
+        <li>Retira la aguja y el prensatelas.</li>
+        <li>Quita la placa de aguja (2 tornillos, normalmente).</li>
+        <li>Retira la canilla y el porta-canillas.</li>
+        <li>Limpia la pelusa y residuos de hilo con brocha o aire comprimido.</li>
+        <li>Gira el volante <strong>manualmente hacia ti</strong> (nunca al revés) mientras observas el movimiento de la barra de aguja y el garfio.</li>
+      </ol>
+    </section>
+
+    <!-- 7 -->
+    <section class="slide">
+      <h2>Cómo funciona el mecanismo</h2>
+      <p class="lead">En la mayoría de las máquinas domésticas Brother, el garfio rotativo gira <strong>dos veces</strong> por cada vuelta completa del volante. La punta del garfio debe cruzar exactamente por el centro de la aguja cuando esta ha subido entre <strong>2.0 y 2.5 mm</strong> desde su punto más bajo (valor típico; verifica el tuyo).</p>
+      <svg viewBox="0 0 600 200" width="100%" height="200" style="background:#0e1f36;border-radius:12px;">
+        <line x1="220" y1="20" x2="220" y2="140" stroke="#9fd0ff" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="220" cy="140" r="4" fill="#ffcf7a"/>
+        <text x="150" y="30" fill="#cfe3fb" font-size="12">Barra de aguja</text>
+        <circle cx="360" cy="150" r="45" fill="none" stroke="#ff8c00" stroke-width="3"/>
+        <line x1="360" y1="150" x2="405" y2="150" stroke="#ff8c00" stroke-width="3" stroke-linecap="round"/>
+        <circle cx="405" cy="150" r="4" fill="#ff8c00"/>
+        <text x="325" y="210" fill="#cfe3fb" font-size="12">Garfio rotativo</text>
+        <path d="M225 145 L400 150" stroke="#4caf50" stroke-dasharray="4 4" stroke-width="1.5"/>
+        <text x="240" y="100" fill="#7fd88f" font-size="12">Punto de cruce ideal</text>
+      </svg>
+      <p class="sim-caption">Esquema simplificado. En la siguiente diapositiva puedes experimentar con la sincronización tú mismo.</p>
+    </section>
+
+    <!-- 8: SIMULATOR -->
+    <section class="slide">
+      <h2>Simulador interactivo de sincronización</h2>
+      <p class="lead" style="margin-bottom:8px;">Mueve el volante y ajusta el "engranaje del garfio" hasta que la punta del garfio (naranja) llegue exactamente al punto de referencia justo cuando la aguja (azul) esté a la altura correcta.</p>
+      <div class="sim-wrap">
+        <div class="sim-controls">
+          <label>Giro del volante: <span class="value" id="thetaVal">0°</span></label>
+          <input type="range" id="thetaSlider" min="0" max="360" value="0" step="1">
+
+          <label>Ajuste del engranaje del garfio (tornillo de tiempo): <span class="value" id="offsetVal">0°</span></label>
+          <input type="range" id="offsetSlider" min="-90" max="90" value="30" step="1">
+
+          <button class="sim-btn" id="snapBtn">Ir al punto de revisión (aguja +2.2 mm)</button>
+
+          <div class="sim-readout" id="simReadout">Mueve los controles para comenzar.</div>
+        </div>
+        <div>
+          <div class="sim-canvas-box">
+            <svg id="simSvg" viewBox="0 0 320 260" width="100%" height="260"></svg>
+          </div>
+          <p class="sim-caption">Simulación ilustrativa del principio mecánico — no representa medidas exactas de un modelo particular.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9 -->
+    <section class="slide">
+      <h2>Procedimiento de ajuste, paso a paso</h2>
+      <ol class="styled">
+        <li>Gira el volante hacia ti hasta que la aguja llegue a su punto más bajo.</li>
+        <li>Sigue girando lentamente hasta que la aguja empiece a subir; detente cuando haya subido aprox. <strong>2.0–2.5 mm</strong> (algunos modelos tienen una marca en el volante o disco de tiempo).</li>
+        <li>Observa la punta del garfio: debe quedar alineada con el centro de la aguja, casi rozando la acanaladura (scarf), con una separación aproximada de <strong>0.1 mm</strong> (el grosor de una hoja de papel).</li>
+        <li>Si el garfio llega adelantado o atrasado, afloja (sin retirar) los tornillos del eje/engranaje impulsor del garfio, generalmente en la base de la máquina.</li>
+        <li>Sostén el volante en la posición de referencia y gira suavemente el eje del garfio hasta lograr la alineación correcta.</li>
+        <li>Si es necesario, ajusta también la altura de la barra de aguja (tornillo de sujeción de la barra) para que el ojo de la aguja quede justo debajo de la punta del garfio en el momento del cruce.</li>
+        <li>Aprieta los tornillos firmemente, sin forzar.</li>
+        <li>Gira el volante a mano varias vueltas completas verificando que no haya roces, golpes ni resistencia anormal.</li>
+      </ol>
+    </section>
+
+    <!-- 10 -->
+    <section class="slide">
+      <h2>Verificación de la holgura aguja–garfio</h2>
+      <div class="grid2">
+        <div>
+          <p class="lead">La separación entre la punta del garfio y la aguja es tan importante como el ángulo de cruce.</p>
+          <ul class="styled">
+            <li><strong>Muy ajustado:</strong> fricción, calentamiento, desgaste prematuro y ruido.</li>
+            <li><strong>Muy holgado:</strong> puntadas saltadas, sobre todo en telas delgadas o con hilo fino.</li>
+            <li><strong>Correcto:</strong> el garfio roza apenas la acanaladura de la aguja, sin tocarla con fuerza.</li>
+          </ul>
+        </div>
+        <div class="info-box">
+          <strong>Truco práctico</strong><br>
+          Si tienes un calibre de espesores, una laminilla de ~0.1 mm debe poder pasar (con ligera resistencia) entre la punta del garfio y la aguja en el punto de cruce.
+        </div>
+      </div>
+    </section>
+
+    <!-- 11 -->
+    <section class="slide">
+      <h2>Reensamblaje y prueba final</h2>
+      <ol class="styled">
+        <li>Reinstala el porta-canillas, la canilla, la placa de aguja, la aguja nueva y el prensatelas.</li>
+        <li>Enhebra la máquina superior e inferior siguiendo el diagrama del manual.</li>
+        <li>Haz una prueba en tela de desecho, cambiando de tela delgada a gruesa.</li>
+        <li>Escucha si hay golpeteo o ves puntadas irregulares; si persiste, repite la verificación del paso de cruce aguja–garfio.</li>
+        <li>Prueba también con costura en reversa y con varios tipos de puntada (zigzag si aplica).</li>
+      </ol>
+    </section>
+
+    <!-- 12 -->
+    <section class="slide">
+      <h2>Solución de problemas</h2>
+      <div id="accordion"></div>
+    </section>
+
+    <!-- 13 -->
+    <section class="slide">
+      <h2>Checklist final</h2>
+      <p class="lead">Marca cada punto conforme lo completes.</p>
+      <div class="checklist" id="checklist"></div>
+      <div class="check-summary" id="checkSummary">0 de 0 completados</div>
+    </section>
+
+    <!-- 14 -->
+    <section class="slide">
+      <div class="eyebrow">Cierre</div>
+      <h1>Recuerda</h1>
+      <ul class="styled">
+        <li>Trabaja con paciencia: ajustes de fracciones de grado hacen la diferencia.</li>
+        <li>Documenta con fotos cada posición antes de moverla.</li>
+        <li>Los valores de esta guía son generales; consulta el manual de servicio de tu modelo Brother específico cuando sea posible.</li>
+        <li>Si tras el ajuste el problema persiste, puede tratarse de otra causa (tensión de hilo, mecanismo de arrastre, resorte del tirahílos), no del timing.</li>
+      </ul>
+      <div class="warn-box">
+        <strong>¿No te sientes seguro?</strong>
+        Un centro de servicio autorizado Brother puede realizar este ajuste con las herramientas y especificaciones exactas de tu modelo.
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<footer>
+  <button class="nav-btn" id="prevBtn">← Anterior</button>
+  <div class="dots" id="dots"></div>
+  <span class="counter" id="counter">1 / 14</span>
+  <button class="nav-btn" id="nextBtn">Siguiente →</button>
+</footer>
+
+<script>
+(function(){
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const total = slides.length;
+  let current = 0;
+
+  const progressBar = document.getElementById('progressBar');
+  const dotsWrap = document.getElementById('dots');
+  const counter = document.getElementById('counter');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+
+  slides.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.addEventListener('click', () => goTo(i));
+    dotsWrap.appendChild(d);
+  });
+  const dots = Array.from(dotsWrap.children);
+
+  function render(){
+    slides.forEach((s, i) => s.classList.toggle('active', i === current));
+    dots.forEach((d, i) => d.classList.toggle('active', i === current));
+    counter.textContent = (current + 1) + ' / ' + total;
+    progressBar.style.width = ((current + 1) / total * 100) + '%';
+    prevBtn.disabled = current === 0;
+    nextBtn.textContent = current === total - 1 ? 'Reiniciar ⟲' : 'Siguiente →';
+  }
+
+  function goTo(i){
+    current = Math.max(0, Math.min(total - 1, i));
+    render();
+  }
+
+  prevBtn.addEventListener('click', () => goTo(current - 1));
+  nextBtn.addEventListener('click', () => {
+    if (current === total - 1) { goTo(0); } else { goTo(current + 1); }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') goTo(current + 1);
+    if (e.key === 'ArrowLeft') goTo(current - 1);
+    if (e.key === 'Home') goTo(0);
+    if (e.key === 'End') goTo(total - 1);
+  });
+
+  render();
+
+  /* ---------- Simulator ---------- */
+  const thetaSlider = document.getElementById('thetaSlider');
+  const offsetSlider = document.getElementById('offsetSlider');
+  const thetaVal = document.getElementById('thetaVal');
+  const offsetVal = document.getElementById('offsetVal');
+  const readout = document.getElementById('simReadout');
+  const snapBtn = document.getElementById('snapBtn');
+  const svg = document.getElementById('simSvg');
+
+  const THETA_TARGET = 46; // ángulo del volante donde la aguja está ~2.2mm sobre el fondo
+
+  function needleHeight(theta){
+    // 0 en el fondo, sube tipo (1-cos) hasta un máximo ilustrativo
+    const rad = theta * Math.PI / 180;
+    return 55 * (1 - Math.cos(rad)); // px de elevación ilustrativa
+  }
+
+  function hookAngle(theta, offset){
+    return ((2 * theta + offset) % 360 + 360) % 360;
+  }
+
+  function angleDiffTo0(angle){
+    let d = angle % 360;
+    if (d > 180) d -= 360;
+    return d; // -180..180, 0 = perfectamente alineado
+  }
+
+  function drawSvg(theta, offset){
+    const needleTopY = 40;
+    const needleBaseY = 190;
+    const lift = needleHeight(theta);
+    const needleTipY = needleBaseY - lift;
+
+    const hookCx = 210, hookCy = 190, hookR = 46;
+    const hAngle = hookAngle(theta, offset);
+    const hRad = (hAngle - 90) * Math.PI / 180; // -90 so 0deg points up toward needle
+    const tipX = hookCx + hookR * Math.cos(hRad);
+    const tipY = hookCy + hookR * Math.sin(hRad);
+
+    const diff = angleDiffTo0(hAngle);
+    const isNearTarget = Math.abs(theta - THETA_TARGET) < 4;
+    let statusColor = '#5b8fc7';
+    if (isNearTarget) {
+      if (Math.abs(diff) < 8) statusColor = '#4caf50';
+      else if (Math.abs(diff) < 22) statusColor = '#e0a800';
+      else statusColor = '#e04b4b';
+    }
+
+    svg.innerHTML = `
+      <rect x="0" y="0" width="320" height="260" fill="#0e1f36" rx="12"/>
+      <text x="60" y="24" fill="#8fb6de" font-size="11">Referencia (2.2 mm)</text>
+      <line x1="60" y1="${needleBaseY - 44}" x2="260" y2="${needleBaseY - 44}" stroke="#3a5578" stroke-dasharray="4 4"/>
+      <line x1="120" y1="${needleTopY}" x2="120" y2="${needleTipY}" stroke="#9fd0ff" stroke-width="6" stroke-linecap="round"/>
+      <circle cx="120" cy="${needleTipY}" r="4" fill="#ffe0a3"/>
+      <text x="70" y="215" fill="#9fd0ff" font-size="11">Aguja</text>
+
+      <circle cx="${hookCx}" cy="${hookCy}" r="${hookR}" fill="none" stroke="#5b8fc7" stroke-width="2" stroke-dasharray="3 3"/>
+      <line x1="${hookCx}" y1="${hookCy}" x2="${tipX}" y2="${tipY}" stroke="${statusColor}" stroke-width="4" stroke-linecap="round"/>
+      <circle cx="${tipX}" cy="${tipY}" r="6" fill="${statusColor}"/>
+      <text x="${hookCx-20}" y="240" fill="#9fd0ff" font-size="11">Garfio rotativo</text>
+
+      <circle cx="120" cy="${needleBaseY - 44}" r="5" fill="${isNearTarget ? statusColor : '#3a5578'}"/>
+    `;
+
+    return { diff, isNearTarget };
+  }
+
+  function updateSim(){
+    const theta = parseInt(thetaSlider.value, 10);
+    const offset = parseInt(offsetSlider.value, 10);
+    thetaVal.textContent = theta + '°';
+    offsetVal.textContent = (offset > 0 ? '+' : '') + offset + '°';
+
+    const { diff, isNearTarget } = drawSvg(theta, offset);
+
+    readout.classList.remove('ok', 'warn', 'bad');
+    if (!isNearTarget) {
+      readout.textContent = 'Gira el volante hasta acercarte al punto de revisión (~' + THETA_TARGET + '°) para evaluar el cruce.';
+    } else if (Math.abs(diff) < 8) {
+      readout.textContent = '✔ Sincronizado: el garfio llega justo cuando la aguja está a la altura correcta.';
+      readout.classList.add('ok');
+    } else if (diff > 0) {
+      readout.textContent = '⚠ El garfio llega ATRASADO (' + Math.round(diff) + '°). Adelanta el engranaje del garfio.';
+      readout.classList.add(Math.abs(diff) < 22 ? 'warn' : 'bad');
+    } else {
+      readout.textContent = '⚠ El garfio llega ADELANTADO (' + Math.round(Math.abs(diff)) + '°). Atrasa el engranaje del garfio.';
+      readout.classList.add(Math.abs(diff) < 22 ? 'warn' : 'bad');
+    }
+  }
+
+  thetaSlider.addEventListener('input', updateSim);
+  offsetSlider.addEventListener('input', updateSim);
+  snapBtn.addEventListener('click', () => { thetaSlider.value = THETA_TARGET; updateSim(); });
+  updateSim();
+
+  /* ---------- Accordion ---------- */
+  const troubleData = [
+    { q: 'Puntadas saltadas', a: 'El garfio llega tarde al punto de cruce, o la aguja está doblada/mal insertada. Verifica el timing y coloca una aguja nueva del calibre correcto.' },
+    { q: 'Rotura frecuente de hilo superior', a: 'Puede deberse a tensión excesiva, aguja dañada tras el ajuste, o un borde filoso en el garfio. Revisa también el recorrido del hilo.' },
+    { q: 'Rotura o enredo de hilo inferior', a: 'Suele indicar mala colocación de la canilla o tensión del porta-canillas, no siempre está relacionado con el timing.' },
+    { q: 'Golpeteo o "clic" metálico al coser', a: 'El garfio está tocando la aguja con demasiada fuerza. Aumenta ligeramente la separación (holgura) entre ambos.' },
+    { q: 'La aguja se dobla o rompe seguido', a: 'Revisa la altura de la barra de aguja y que la aguja esté completamente insertada y del tipo correcto para el modelo.' },
+    { q: 'La máquina no avanza la tela', a: 'Esto normalmente es un problema del mecanismo de arrastre (dientes/transportador), no del timing aguja-garfio.' },
+  ];
+  const accWrap = document.getElementById('accordion');
+  troubleData.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'acc-item';
+    div.innerHTML = `<div class="acc-head"><span>${item.q}</span><span class="plus">+</span></div><div class="acc-body"><p>${item.a}</p></div>`;
+    const head = div.querySelector('.acc-head');
+    const body = div.querySelector('.acc-body');
+    head.addEventListener('click', () => {
+      const isOpen = div.classList.contains('open');
+      accWrap.querySelectorAll('.acc-item').forEach(el => { el.classList.remove('open'); el.querySelector('.acc-body').style.maxHeight = null; });
+      if (!isOpen) {
+        div.classList.add('open');
+        body.style.maxHeight = body.scrollHeight + 40 + 'px';
+      }
+    });
+    accWrap.appendChild(div);
+  });
+
+  /* ---------- Checklist ---------- */
+  const checklistItems = [
+    'Máquina desconectada de la corriente antes de iniciar',
+    'Fotos tomadas de la posición original de piezas',
+    'Placa de aguja, canilla y porta-canillas retirados',
+    'Zona del garfio limpia de pelusa',
+    'Punto de revisión localizado (aguja ~2.2 mm sobre el fondo)',
+    'Punta del garfio alineada con el centro de la aguja',
+    'Holgura aguja-garfio verificada (~0.1 mm)',
+    'Tornillos del engranaje del garfio apretados con firmeza',
+    'Volante girado a mano sin roces ni golpes',
+    'Prueba de costura en tela de desecho realizada',
+  ];
+  const checklistWrap = document.getElementById('checklist');
+  const checkSummary = document.getElementById('checkSummary');
+  checklistItems.forEach((text, i) => {
+    const label = document.createElement('label');
+    label.innerHTML = `<input type="checkbox" data-idx="${i}"> <span>${text}</span>`;
+    checklistWrap.appendChild(label);
+  });
+  function updateChecklist(){
+    const boxes = checklistWrap.querySelectorAll('input[type=checkbox]');
+    let doneCount = 0;
+    boxes.forEach(b => {
+      b.parentElement.classList.toggle('done', b.checked);
+      if (b.checked) doneCount++;
+    });
+    checkSummary.textContent = doneCount + ' de ' + boxes.length + ' completados';
+  }
+  checklistWrap.addEventListener('change', updateChecklist);
+  updateChecklist();
+})();
+</script>
+
+</body>
+</html>
